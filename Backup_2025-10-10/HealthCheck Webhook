@@ -1,0 +1,76 @@
+{
+  "createdAt": "2025-08-26T22:46:05.588Z",
+  "updatedAt": "2025-08-29T18:14:53.000Z",
+  "id": "OgFgwa6hdOB3VtJ5",
+  "name": "HealthCheck Webhook",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        -320
+      ],
+      "id": "4623b13a-9f54-41bf-ad11-e8210a11f555",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "chatId": "8452676547",
+        "text": "=Hej jag testar!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        -320
+      ],
+      "id": "9d599020-5a55-411d-8f84-efe7b46beaa8",
+      "name": "Send a text message",
+      "webhookId": "a890006f-a7b1-40f9-bd7d-78ef82e7620c",
+      "credentials": {
+        "telegramApi": {
+          "id": "7NKBIMQRWzjXDg0e",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "8d0754e8-5931-4953-bd8a-ff90bf2f823b",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-26T22:46:05.597Z",
+      "updatedAt": "2025-08-26T22:46:05.597Z",
+      "role": "workflow:owner",
+      "workflowId": "OgFgwa6hdOB3VtJ5",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
