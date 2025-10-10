@@ -1,0 +1,28 @@
+{
+  "createdAt": "2025-10-10T20:14:42.321Z",
+  "updatedAt": "2025-10-10T20:14:42.321Z",
+  "id": "zzarzm1Ke8mmXIIo",
+  "name": "PDF Fakturaläsare",
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "d7da36e4-47a2-4d86-9690-9482bbc38003",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-10T20:14:42.331Z",
+      "updatedAt": "2025-10-10T20:14:42.331Z",
+      "role": "workflow:owner",
+      "workflowId": "zzarzm1Ke8mmXIIo",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
