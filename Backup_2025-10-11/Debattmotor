@@ -1,0 +1,584 @@
+{
+  "createdAt": "2025-09-19T11:41:22.083Z",
+  "updatedAt": "2025-10-02T14:46:26.000Z",
+  "id": "lyGGAm2OqaFELFac",
+  "name": "Debattmotor",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "*"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        -880
+      ],
+      "id": "a2e14217-aaed-4407-9b7d-796718615dc7",
+      "name": "Telegram Trigger",
+      "webhookId": "8ed3678e-61a2-4c66-b5d4-e509fd1afdfd",
+      "credentials": {
+        "telegramApi": {
+          "id": "QgfPoF1VO69RunyN",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "!debatt",
+                    "rightValue": "={{ $json.message }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "b79e8a53-0144-49a9-90e9-d3b9ce467c9f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Debatt"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b83aac22-b5e2-4423-ae69-c7a302f200b1",
+                    "leftValue": "!katt",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Katt"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        224,
+        -880
+      ],
+      "id": "06a5f246-9c6a-43a8-9ee8-2c4286e054fe",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b6f535cf-0cfe-419c-9c65-c79bc823b184",
+              "name": "message.text",
+              "value": "={{ ($json.message?.text || '').replace(/^(!|\\/)debatt\\s*/i, '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        -880
+      ],
+      "id": "21702766-3a2a-44fb-b417-9cfdf526751b",
+      "name": "Rensa fråga"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.choices[0].message.content;\nreturn [{ json: { text } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        -736
+      ],
+      "id": "b2df01cf-4aa1-478d-bf48-78a5acc0f712",
+      "name": "Clean Up Crew"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        -672
+      ],
+      "id": "29eb2f1b-9aa4-41e4-9d92-3ab274ee3846",
+      "name": "Send a text message",
+      "webhookId": "11b6f238-9d1f-45de-bebf-3aa1a88221bb",
+      "credentials": {
+        "telegramApi": {
+          "id": "QgfPoF1VO69RunyN",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1952,
+        -944
+      ],
+      "id": "142e1770-da07-4dd3-9b99-48438b18f926",
+      "name": "TokenMerge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "947bcd7b-61c8-48bf-ad63-edd9bcca3673",
+              "name": "usage.total_tokens",
+              "value": "={{ $json.usage.total_tokens }}",
+              "type": "number"
+            },
+            {
+              "id": "7e83a55e-860a-4563-8f4f-3c96965362a0",
+              "name": "model",
+              "value": "={{ $json.model }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1376,
+        -1248
+      ],
+      "id": "9fb6ef0c-70e8-4928-8b95-d74528fcc916",
+      "name": "Set Idéspruta Usage"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=\n {{ $json.message.text }}"
+            },
+            {
+              "content": "Du är en kreativ idéspruta. Ditt jobb är att ge flera originella och oväntade perspektiv på en fråga. Döm eller värdera inte. Du svarar direkt på frågan utan att vara trevlig och plockar inte med dina instruktioner.",
+              "role": "system"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        624,
+        -976
+      ],
+      "id": "83d04991-d9fd-4470-918b-9d40af40c940",
+      "name": "Idéspruta",
+      "credentials": {
+        "openAiApi": {
+          "id": "qlVANgHQVRewZMT0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.choices[0].message.content }}"
+            },
+            {
+              "content": "Du är en objektiv domare i en tankedebatt mellan två AI-roller: en Idéspruta och en Kritiker. Här är först en fråga, följt av Idésprutans förslag och sedan Kritikerns synpunkter. Ditt uppdrag är att balansera argumenten, identifiera styrkor och svagheter, och avsluta med en tydlig slutsats. Svara koncist, respektfullt och med fokus på kvaliteten i argumenten – inte vem som “vann”. Avsluta sedan med em lista med konkreta förslag på hur nästa steg skall tas.\n",
+              "role": "system"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1376,
+        -880
+      ],
+      "id": "46348827-4b7f-45f8-b8d1-48c492464846",
+      "name": "Domare",
+      "credentials": {
+        "openAiApi": {
+          "id": "qlVANgHQVRewZMT0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.choices[0].message.content }}"
+            },
+            {
+              "content": "Du är en analytisk kritiker. Ditt jobb är att granska idéer, hitta svagheter, ställa kritiska frågor och ifrågasätta resonemanget på ett konstruktivt sätt.u svarar direkt på frågan utan att vara trevlig och plockar inte med dina instruktioner.\n",
+              "role": "system"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        912,
+        -736
+      ],
+      "id": "d2a2d47a-0abf-4c99-882b-717edc2ca77c",
+      "name": "Kritiker",
+      "credentials": {
+        "openAiApi": {
+          "id": "qlVANgHQVRewZMT0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a2156ae-e554-4884-812f-561ec1bb9d25",
+              "name": "usage.total_tokens",
+              "value": "={{ $json.usage.total_tokens }}",
+              "type": "number"
+            },
+            {
+              "id": "16d7687a-58c6-4365-a054-7cf72e9b7df2",
+              "name": "model",
+              "value": "={{ $json.model }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1728,
+        -544
+      ],
+      "id": "417de6f5-6bde-4b6d-b345-351939978552",
+      "name": "Set Kritiker Usage"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3c082321-9d9e-4a86-aa73-0302eaf4dc4e",
+              "name": "usage.total_tokens",
+              "value": "={{ $json.usage.total_tokens }}",
+              "type": "number"
+            },
+            {
+              "id": "8adae7db-bc96-41b5-9694-97e74b70a766",
+              "name": "model",
+              "value": "={{ $json.model }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1728,
+        -928
+      ],
+      "id": "7d6ee609-a057-420d-b33c-6a363f95611f",
+      "name": "Set Domare Usage"
+    },
+    {
+      "parameters": {
+        "jsCode": "/******************************\n * Token & Kostnad-summering\n * Körs direkt efter Merge (Append)\n * Förväntad Merge-item-struktur per rad (så tolerant som möjligt):\n * {\n *   model: \"gpt-4.1-mini\"            // eller options.model\n *   usage: {\n *     input_tokens?: number,\n *     output_tokens?: number,\n *     total_tokens?: number\n *   }\n *   // ...alternativt tokenUsage.promptTokens/completionTokens/totalTokens\n * }\n ******************************/\n\n// === KONFIG ===\n\n// Prislista: USD per 1000 tokens (prompt = \"in\", completion = \"out\")\nconst PRICING = {\n  \"gpt-4.1-mini-2025-04-14\": { in: 0.00040, out: 0.00160 },\n  // lägg till fler om du använder dem:\n  // \"gpt-4o\": { in: 0.00250, out: 0.01000 },\n};\n\n// Om bara total_tokens finns: antag hur de fördelas mellan input/output\nconst FALLBACK_INPUT_SHARE  = 0.40; // 40% in\nconst FALLBACK_OUTPUT_SHARE = 0.60; // 60% out\n\n// Valutakonvertering (om du vill visa SEK också)\nconst SHOW_SEK = true;\nconst USD_TO_SEK = 10.50;  // ändra till din kurs vid behov\n\n\n// === HJÄLPARE ===\nfunction toNum(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nfunction extractModel(j) {\n  return j?.model || j?.options?.model || j?.provider?.model || \"unknown-model\";\n}\n\nfunction extractUsage(j) {\n  // Försök flera fält-upplägg\n  const u = j?.usage || j?.tokenUsage || {};\n  let iTok  = toNum(u.input_tokens ?? u.promptTokens);\n  let oTok  = toNum(u.output_tokens ?? u.completionTokens);\n  let tTok  = toNum(u.total_tokens ?? u.totalTokens);\n\n  if ((iTok + oTok) === 0 && tTok > 0) {\n    // Ingen uppdelning, bara total → dela enligt fallback\n    iTok = Math.round(tTok * FALLBACK_INPUT_SHARE);\n    oTok = tTok - iTok;\n  } else if (tTok === 0) {\n    tTok = iTok + oTok;\n  }\n\n  return { in: iTok, out: oTok, total: tTok };\n}\n\nfunction costUSD(model, inTok, outTok) {\n  const p = PRICING[model] || { in: 0, out: 0 };\n  return (inTok / 1000) * (p.in || 0) + (outTok / 1000) * (p.out || 0);\n}\n\n\n// === LOGIK ===\nconst byModel = {};\nlet grand = { in: 0, out: 0, total: 0, costUSD: 0 };\n\nfor (const it of items) {\n  const j = it.json || {};\n  const model = extractModel(j);\n  const u = extractUsage(j);\n\n  if (!byModel[model]) byModel[model] = { in: 0, out: 0, total: 0, costUSD: 0 };\n\n  byModel[model].in    += u.in;\n  byModel[model].out   += u.out;\n  byModel[model].total += u.total;\n\n  const c = costUSD(model, u.in, u.out);\n  byModel[model].costUSD += c;\n\n  grand.in    += u.in;\n  grand.out   += u.out;\n  grand.total += u.total;\n  grand.costUSD += c;\n}\n\n\n// === RAPPORT (Markdown för Telegram) ===\nconst lines = [];\nlines.push(\"🧮 *Token & kostnad – ChatGPT-noder*\");\n\nfor (const [model, m] of Object.entries(byModel)) {\n  const line =\n    `• *${model}*\\n` +\n    `  – Input: ${m.in}  | Output: ${m.out}  | Total: ${m.total}\\n` +\n    `  – Kostnad: $${m.costUSD.toFixed(4)}` +\n    (SHOW_SEK ? `  (≈ ${ (m.costUSD * USD_TO_SEK).toFixed(2) } kr)` : ``);\n  lines.push(line);\n}\n\nlines.push(\"—\");\nlines.push(\n  `*Totalt*  Input: ${grand.in}  | Output: ${grand.out}  | Total: ${grand.total}\\n` +\n  `*Total kostnad:* $${grand.costUSD.toFixed(4)}` +\n  (SHOW_SEK ? `  (≈ ${ (grand.costUSD * USD_TO_SEK).toFixed(2) } kr)` : ``)\n);\n\n// Returnera EN rad för Telegram\nreturn [{\n  json: {\n    perModel: byModel,\n    totals: { ...grand, costSEK: SHOW_SEK ? grand.costUSD * USD_TO_SEK : undefined },\n    report: lines.join(\"\\n\")\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        -928
+      ],
+      "id": "c19cee80-5be2-4dec-a2ef-4a76055abde5",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}\n",
+        "text": "={{ $json.report }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2400,
+        -928
+      ],
+      "id": "3cb34633-e0a9-47fe-9ba2-af949cab2170",
+      "name": "Send a text message1",
+      "webhookId": "11b6f238-9d1f-45de-bebf-3aa1a88221bb",
+      "credentials": {
+        "telegramApi": {
+          "id": "QgfPoF1VO69RunyN",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Rensa fråga",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rensa fråga": {
+      "main": [
+        [
+          {
+            "node": "Idéspruta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Up Crew": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TokenMerge": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Idéspruta Usage": {
+      "main": [
+        [
+          {
+            "node": "TokenMerge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Idéspruta": {
+      "main": [
+        [
+          {
+            "node": "Set Idéspruta Usage",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Kritiker",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Domare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Domare": {
+      "main": [
+        [
+          {
+            "node": "Set Domare Usage",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Clean Up Crew",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kritiker": {
+      "main": [
+        [
+          {
+            "node": "Set Kritiker Usage",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Domare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Kritiker Usage": {
+      "main": [
+        [
+          {
+            "node": "TokenMerge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set Domare Usage": {
+      "main": [
+        [
+          {
+            "node": "TokenMerge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "c3482e33-729b-44d5-a6e1-54f3d0412460",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-09-19T11:41:22.097Z",
+      "updatedAt": "2025-09-19T11:41:22.097Z",
+      "role": "workflow:owner",
+      "workflowId": "lyGGAm2OqaFELFac",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
