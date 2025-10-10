@@ -1,0 +1,88 @@
+{
+  "createdAt": "2025-08-29T18:16:54.644Z",
+  "updatedAt": "2025-08-29T18:43:44.000Z",
+  "id": "YTCPDiSIvGUeSrsa",
+  "name": "My workflow 3",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ec279cb6-d3d4-4cfe-8893-46a230442e10",
+      "name": "Telegram Trigger",
+      "webhookId": "2c6f795d-8417-462f-9858-4cfe23ba8382",
+      "credentials": {
+        "telegramApi": {
+          "id": "7NKBIMQRWzjXDg0e",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "{{$json[\"message\"][\"chat\"][\"8452676547\"]}}",
+        "text": "=Du skrev: {{$json[\"message\"][\"text\"]}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "10450d53-cbd2-44cd-b079-c70e6b5180f8",
+      "name": "Send a text message",
+      "webhookId": "b349cdb8-addc-402d-bee8-9984f79df331",
+      "credentials": {
+        "telegramApi": {
+          "id": "7NKBIMQRWzjXDg0e",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "95a0f8e8-5b2b-4e9d-ab0d-828b5b847f34",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-29T18:16:54.670Z",
+      "updatedAt": "2025-08-29T18:16:54.670Z",
+      "role": "workflow:owner",
+      "workflowId": "YTCPDiSIvGUeSrsa",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
