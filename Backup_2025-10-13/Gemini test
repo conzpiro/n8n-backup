@@ -1,0 +1,84 @@
+{
+  "createdAt": "2025-10-06T17:57:15.099Z",
+  "updatedAt": "2025-10-06T19:30:35.000Z",
+  "id": "u3dQkMDB1qJwRkYW",
+  "name": "Gemini test",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5c029d4a-efa2-4087-be57-0a484838a02b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash"
+        },
+        "messages": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "629c60dd-1fd0-4d32-a871-cb2abe51592f",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "k3VTKRZhisV3UVaL",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "8b445f75-c848-4c25-80df-676c8daf982a",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-06T17:57:15.109Z",
+      "updatedAt": "2025-10-06T17:57:15.109Z",
+      "role": "workflow:owner",
+      "workflowId": "u3dQkMDB1qJwRkYW",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
