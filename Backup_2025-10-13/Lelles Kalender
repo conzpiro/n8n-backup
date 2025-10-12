@@ -1,0 +1,134 @@
+{
+  "createdAt": "2025-10-12T17:39:26.436Z",
+  "updatedAt": "2025-10-12T18:41:05.000Z",
+  "id": "Ljggsbo9cuqOb6N5",
+  "name": "Lelles Kalender",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "14aebbd5-e9cb-4b38-a1e4-2a16a858ed40",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCACOYddtWmisdbhEoNaeBDw",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "1701a92e-06ef-4a44-b13a-ec0d854bdaa0",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e6b4ad86-d159-48c2-a10f-e4eb9f1cbe4f",
+              "leftValue": "={{ $json[\"pubDate\"] }}",
+              "rightValue": "={{ $now.toISODate() }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "afterOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "9e6da01a-c05a-4c79-89ca-3a3d09d1910a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -176
+      ],
+      "id": "a7a88a91-1227-4b2f-be34-2da6ebfcc43f",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "0473ad4a-fda0-4a84-b74e-2918b8f90788",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-12T17:39:26.444Z",
+      "updatedAt": "2025-10-12T17:39:26.444Z",
+      "role": "workflow:owner",
+      "workflowId": "Ljggsbo9cuqOb6N5",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
