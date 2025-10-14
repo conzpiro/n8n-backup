@@ -1,0 +1,269 @@
+{
+  "createdAt": "2025-10-14T09:30:52.993Z",
+  "updatedAt": "2025-10-14T20:22:22.000Z",
+  "id": "7RjivAmmetMeL2qI",
+  "name": "Todoist Auto Sort - 2025",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1600,
+        -704
+      ],
+      "id": "4ecefa9e-b311-44ae-9d40-e65c6355d3d5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {}
+      },
+      "id": "bd656b4d-2420-46b3-ac59-0d5f8b966c37",
+      "name": "Hämta alla uppgifter",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        -1408,
+        -704
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "2779563a-40fe-433b-8d66-70d3950eb8b4",
+              "leftValue": "={{ $json.project_id }}",
+              "rightValue": "2358696768",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "81168859-2972-47ca-80db-837ec0733fd0",
+              "leftValue": "={{ $json.labels[0] }}",
+              "rightValue": "=arbete",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ee2c52ae-ceb8-48a1-877c-7b89bcc75df4",
+      "name": "Filtrera: Inbox @arbete",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        -1152
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "taskId": "={{ $json.id }}",
+        "project": {
+          "__rl": true,
+          "value": "2358696775",
+          "mode": "list",
+          "cachedResultName": "Arbete"
+        },
+        "options": {
+          "section": "204489558"
+        }
+      },
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        -1168
+      ],
+      "id": "d2705707-002b-4ad9-80f8-b751976fb352",
+      "name": "Move 2 #arbete",
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "2779563a-40fe-433b-8d66-70d3950eb8b4",
+              "leftValue": "={{ $json.project_id }}",
+              "rightValue": "2358696768",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "81168859-2972-47ca-80db-837ec0733fd0",
+              "leftValue": "={{ $json.labels[0] }}",
+              "rightValue": "=privat",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3e4e038f-20d0-43cb-8a12-081788bd08da",
+      "name": "Filtrera: Inbox @privat",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        -912
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "taskId": "={{ $json.id }}",
+        "project": {
+          "__rl": true,
+          "value": "2361399881",
+          "mode": "list",
+          "cachedResultName": "Privat"
+        },
+        "options": {
+          "section": "204534941"
+        }
+      },
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        -928
+      ],
+      "id": "ffb95e56-9990-41e6-af6e-58e5fb56157f",
+      "name": "Move 2 #privat",
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Sorterar inkommande uppgifter från Inkorg\n## Skickar in uppgifterna till #arbete eller #privat",
+        "height": 608,
+        "width": 752
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        -1312
+      ],
+      "id": "33e1f63a-47b1-411e-b8ab-9fd84e087d94",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Hämta alla uppgifter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hämta alla uppgifter": {
+      "main": [
+        [
+          {
+            "node": "Filtrera: Inbox @arbete",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filtrera: Inbox @privat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrera: Inbox @arbete": {
+      "main": [
+        [
+          {
+            "node": "Move 2 #arbete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrera: Inbox @privat": {
+      "main": [
+        [
+          {
+            "node": "Move 2 #privat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "3d553b42-1a77-46c1-98ae-47d45cfb49cb",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-14T09:30:53.106Z",
+      "updatedAt": "2025-10-14T09:30:53.106Z",
+      "role": "workflow:owner",
+      "workflowId": "7RjivAmmetMeL2qI",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
