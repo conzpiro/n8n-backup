@@ -1,0 +1,91 @@
+{
+  "createdAt": "2025-10-15T20:40:44.761Z",
+  "updatedAt": "2025-10-16T14:12:16.000Z",
+  "id": "hoB9sopxealwJnd4",
+  "name": "todoist_create",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ef234942-1888-4f42-81f8-fe86fe258b6b",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "183c5e2f-0fe0-42e1-a345-8c01e76f49a2",
+      "name": "Webhook",
+      "webhookId": "ef234942-1888-4f42-81f8-fe86fe258b6b",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "suTGlyEymLqN31zZ",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "2358696768",
+          "mode": "list",
+          "cachedResultName": "Inbox"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        0
+      ],
+      "id": "03badd33-6a51-40a4-b085-afa7076ed5d9",
+      "name": "Create a task",
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create a task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7f2bb7d8-598e-446a-bc38-7b65c0a75dc4",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-15T20:40:44.770Z",
+      "updatedAt": "2025-10-15T20:40:44.770Z",
+      "role": "workflow:owner",
+      "workflowId": "hoB9sopxealwJnd4",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
