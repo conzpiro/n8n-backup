@@ -1,0 +1,828 @@
+{
+  "createdAt": "2025-09-23T22:26:46.299Z",
+  "updatedAt": "2025-10-20T15:15:27.000Z",
+  "id": "QsUbhYVcmbMuU8ly",
+  "name": "Analys Logbook",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -992
+      ],
+      "id": "b48116d7-aff9-4697-8f8f-a68d4fa055e8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1EAClc0GI63AJHm-cLm-iFMKkydP5SWDj",
+            "mode": "list",
+            "cachedResultName": "The Logbook - Sammanställningar",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1EAClc0GI63AJHm-cLm-iFMKkydP5SWDj"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        224,
+        -992
+      ],
+      "id": "28bcace8-edb1-4e5d-a2a5-fe46ff2ab26c",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "R75QT2qp1rBLDWUh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json[\"name\"]}}",
+                    "rightValue": "rapport.xlsx",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "48bc5fa7-2379-452b-af16-326e7784432a"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Rapport"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "49980460-3bef-4d5f-99c5-a136ec8ed30b",
+                    "leftValue": "={{$json[\"name\"]}}",
+                    "rightValue": "antal.xlsx",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Antal"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        448,
+        -992
+      ],
+      "id": "7c5d8520-8eec-45d7-911e-c9ec064dc8d1",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        672,
+        -1088
+      ],
+      "id": "e76dceb6-e50b-4ad1-a5d6-4501db2b6c31",
+      "name": "Download - Rapport",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "R75QT2qp1rBLDWUh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        672,
+        -896
+      ],
+      "id": "4eb247d7-a257-4966-9a67-b571a26bb346",
+      "name": "Download - Antal",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "R75QT2qp1rBLDWUh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "Datum",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1344,
+        -992
+      ],
+      "id": "dcd3a46b-a257-4ee4-92b5-c3e430286c5e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "=data",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        896,
+        -896
+      ],
+      "id": "0dfb370f-685d-42fc-94f0-4b1406daf250",
+      "name": "Extract Antal"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        896,
+        -1088
+      ],
+      "id": "5e471194-330d-4ca8-8d63-57722ea79066",
+      "name": "Extract Rapport"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f9be285a-77a6-44fe-825c-ed09559df02e",
+              "name": "Datum",
+              "value": "={{ $json[\"Datum\"].split(\" \")[0] }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        -1088
+      ],
+      "id": "c88e14a8-c3f5-43ae-be55-3b7034e98dcd",
+      "name": "DatumFixRapport"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f9be285a-77a6-44fe-825c-ed09559df02e",
+              "name": "Datum",
+              "value": "={{ $json[\"Datum\"].split(\" \")[0] }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        -896
+      ],
+      "id": "5bb90e46-6370-40b4-8cf4-a22f0c9c1375",
+      "name": "DatumFixAntal"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c8f043b0-39f8-4f0f-9297-bb2553793132",
+              "name": "prompt",
+              "value": "=Grupp:{{ $json.Grupp }}\\n Datum: {{$json[\"Datum\"]}}\\n Statistik: {{$json[\"Tjejer\"]}} tjejer, {{$json[\"Killar\"]}} killar, {{ $json['Icke-binära'] }} icke-binära, {{$json[\"Personal\"]}} personal\nÅldersgrupper: 13-15:{{ $json['13-15'] }}, 16-19:{{ $json['16-19'] }}\n\nRapport: \n{{$json[\"Anteckningar\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        -992
+      ],
+      "id": "e96df663-8931-4c10-b82b-3d4fe630375f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Språk: svenska.\nSvara endast med giltig JSON enligt schemat (inkl. fältnamn). Inga förklaringar utanför JSON.\n\nRoll & mål\nDu är en kritisk men konstruktiv analysassistent för öppen ungdomsverksamhet. Du får två källor:\n\nrapport: löpande text (vad hände, reflektioner)\n\nantal: statistik (kön, ålder, personal)\n\nRegler för stil och kvalitet\n\nSkriv korta, precisa meningar. Undvik fyllnadsord.\n\nVar icke-upprepande: återanvänd inte samma adjektiv eller fras två gånger om det går att undvika.\n\nGör små, skarpa slutsatser (“därför… vilket innebär att… → åtgärd”).\n\nOm data saknas: skriv null eller 0 och lägg en punkt i Saknas-listan.\n\nInga antaganden som motsäger källorna.\n\nGör alltid en enkel kontroll att Totalt = Tjejer + Killar + IckeBinära. Om det inte stämmer: korrigera Totalt och notera det i Saknas.\n\nUppgift\n\nSammanfatta vad som hände på max 3 meningar.\n\nBeskriv stämning på max 1 mening (unika ord; undvik “stökig” om den redan använts i Sammanfattning).\n\nUngdomsdelaktighet: 1–2 meningar med konkreta exempel (vem initierade vad).\n\nBehovsanalys: 2–3 konkreta förbättringar (gärna så att/ för att-motivering).\n\nRelationsskapande: 1–2 meningar om hur personalen arbetade med relation/trygghet.\n\nPoängsätt Rapportens kvalitet: Reflektionspoäng (0–10) och Klarhetspoäng (0–10).\n\nRedovisa statistik exakt som i antal (efter din totals-kontroll).\n\nAnalys: 2–4 meningar om mönster, orsaker, konsekvenser (inte en upprepning av sammanfattningen).\n\nSaknas: lista punkter som hindrar analys (t.ex. oklart ansvar, saknad tidslinje, utebliven köns/åldersfördelning per aktivitet).\n\nFöreslå 2–3 Nästa steg i imperativ form (“Inför kö-schema för VR”, “Separera soffzon från tävlingszon”).\n\nJSON-schema (obligatoriskt):\n{\n  \"Grupp\": \"string\",\n  \"Datum\": \"YYYY-MM-DD\",\n  \"Sammanfattning\": \"string\",\n  \"Stämning\": \"string\",\n  \"Ungdomsdelaktighet\": \"string\",\n  \"Behovsanalys\": [\"string\"],\n  \"Relationsskapande\": \"string\",\n  \"Analys\": \"string\",\n  \"Reflektionspoäng\": 0,\n  \"Klarhetspoäng\": 0,\n  \"Besöksstatistik\": {\n    \"Tjejer\": 0,\n    \"Killar\": 0,\n    \"IckeBinära\": 0,\n    \"Personal\": 0,\n    \"Ålder_13_15\": 0,\n    \"Ålder_16_19\": 0,\n    \"Totalt\": 0\n  },\n  \"Saknas\": [\"string\"],\n  \"NästaSteg\": [\"string\"]\n}\n\n",
+              "role": "system"
+            },
+            {
+              "content": "=Här är data att analysera:\n{{$json[\"prompt\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1792,
+        -992
+      ],
+      "id": "12ba244d-9555-4b86-8f3b-41024c63cfb5",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "qlVANgHQVRewZMT0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  let raw = item.json.message?.content ?? \"\";\n\n  if (typeof raw === \"object\") {\n    return { json: raw };\n  }\n\n  raw = raw\n    .trim()\n    .replace(/^```(json)?/i, \"\")\n    .replace(/```$/, \"\")\n    .replace(/^.*?(\\{)/s, \"{\")\n    .replace(/(\\})[^}]*$/, \"}\");\n\n  try {\n    let parsed = JSON.parse(raw);\n\n    // Om JSON ligger som sträng inuti JSON\n    if (typeof parsed === \"string\") {\n      parsed = JSON.parse(parsed);\n    }\n\n    return { json: parsed };\n  } catch (err) {\n    return { json: { error: \"Kunde inte parsa GPT-output\", raw } };\n  }\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        -992
+      ],
+      "id": "be0bc19c-f556-4591-ac2e-b2c7130aebc7",
+      "name": "Parse 2 Nice JSON"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "edb6df5e-c1d1-4a29-a15f-1e110de7c4f5",
+              "name": "docContent",
+              "value": "=📅 Datum: {{$json[\"Datum\"]}}\n\n📝 Sammanfattning:\n{{$json[\"Sammanfattning\"]}}\n\n🌡️ Stämning:\n{{$json[\"Stämning\"]}}\n\n🙋 Ungdomsdelaktighet:\n{{$json[\"Ungdomsdelaktighet\"]}}\n\n📌 Behovsanalys:\n{{$json[\"Behovsanalys\"]}}\n\n🤝 Relationsskapande:\n{{$json[\"Relationsskapande\"]}}\n\n⭐ Reflektionspoäng:\n{{$json[\"Reflektionspoäng\"]}} / 10\n\nBesöksstatistik\nKillar: {{ $json['Besöksstatistik'].Killar }}\nTjejer: {{ $json['Besöksstatistik'].Tjejer }}\n\n",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2368,
+        -1088
+      ],
+      "id": "8cc25e0f-2981-4347-8dbc-3712fb30008b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{$json[\"docContent\"]}}\n{{ $json.choices[0].message.content }}",
+        "name": "=Sammanställning-{{$now.toFormat(\"yyyy-LL-dd\")}}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1EAClc0GI63AJHm-cLm-iFMKkydP5SWDj",
+          "mode": "list",
+          "cachedResultName": "The Logbook - Sammanställningar",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1EAClc0GI63AJHm-cLm-iFMKkydP5SWDj"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3392,
+        -1088
+      ],
+      "id": "5ae574d6-ae83-4a70-9c29-218458457b1c",
+      "name": "Create file from text",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "R75QT2qp1rBLDWUh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let content = \"\";\n\nfor (const item of items) {\n  const d = item.json;\n\n  content += `📅 Datum: ${d.Datum || \"\"}\\n\\n`;\n  content += `📝 Sammanfattning:\\n${d.Sammanfattning || \"\"}\\n\\n`;\n  content += `🌡️ Stämning:\\n${d.Stämning || \"\"}\\n\\n`;\n  content += `🙋 Ungdomsdelaktighet:\\n${d.Ungdomsdelaktighet || \"\"}\\n\\n`;\n  content += `📌 Behovsanalys:\\n${d.Behovsanalys || \"\"}\\n\\n`;\n  content += `🤝 Relationsskapande:\\n${d.Relationsskapande || \"\"}\\n\\n`;\n  content += `⭐ Reflektionspoäng:\\n${d.Reflektionspoäng || \"\"} / 10\\n\\n`;\n\n  if (d.Besöksstatistik) {\n    content += `👥 Besöksstatistik:\\n`;\n    content += `- Tjejer: ${d.Besöksstatistik.Tjejer || 0}\\n`;\n    content += `- Killar: ${d.Besöksstatistik.Killar || 0}\\n`;\n    content += `- Icke-binära: ${d.Besöksstatistik.IckeBinära || 0}\\n`;\n    content += `- Personal: ${d.Besöksstatistik.Personal || 0}\\n`;\n    content += `- Ålder 13-15: ${d.Besöksstatistik[\"Ålder_13_15\"] || 0}\\n`;\n    content += `- Ålder 16-19: ${d.Besöksstatistik[\"Ålder_16_19\"] || 0}\\n`;\n    content += `- Totalt: ${d.Besöksstatistik.Totalt || 0}\\n\\n`;\n  }\n\n  content += `--------------------------------------\\n\\n`;\n}\n\n// Returnera bara ETT objekt\nreturn [\n  {\n    json: {\n      docContent: content\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2592,
+        -1088
+      ],
+      "id": "12a790f0-610b-4190-a796-847aeae83efd",
+      "name": "Code",
+      "executeOnce": false,
+      "retryOnFail": false,
+      "notesInFlow": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Du är en objektiv och skarp analysassistent som skriver för ungdomsledare.\nDu får flera dagliga rapporter från en öppen ungdomsverksamhet och ska ta fram en samlad veckosammanställning som personalen kan använda i reflektion och planering.\n\n📋 Uppdrag\n\nIdentifiera mönster och trender\n\nSammanfatta återkommande teman i stämning, delaktighet, behovsanalys och relationsskapande.\n\nNämn vad som ofta fungerar bra och vad som ofta skapar utmaningar.\n\nLyft styrkor och utvecklingsområden\n\nFormulera styrkor i presens (“Personalen skapar...”, “Ungdomarna tar initiativ till...”)\n\nFormulera utmaningar i konstruktiv ton (“Behöver tydligare struktur kring...”, “Risk för tapp i engagemang när…”).\n\nCitat/utdrag (3–5 st)\n\nVälj korta, autentiska utdrag (1–2 meningar) som fångar stämning, delaktighet eller behov.\n\nAnge varje citat med kursiv stil och ange källa som “(rapport X)” eller dag om det finns datum.\n\nVälj variation – inte bara positiva eller negativa.\n\nBesöksbild\n\nGe en kort översikt: genomsnittligt antal ungdomar, könsfördelning (tjejer/killar/icke-binära), samt dominanta åldersgrupper.\n\nRedovisa personalantal separat.\n\nSkriv gärna “i snitt cirka 40 ungdomar, varav något fler killar än tjejer, och främst 13–15 år”.\n\nAvvikelser / särskilda händelser\n\nTa upp det som sticker ut (t.ex. ovanligt hög närvaro, incident, ny aktivitet, förändrad stämning).\n\nReflektion (3–4 meningar)\n\nAnalysera varför mönstren uppstår.\n\nKoppla till framtida förbättringar: “För att bibehålla lugnet…”, “För att stärka relationer framåt…”.\n\nAvsluta med en insikt eller nyckelfråga till personalgruppen.\n\nTips för bättre rapportskrivning (3–5 punkter)\n\nGe konkreta och uppmuntrande förslag (“Beskriv fler känslor istället för bara aktiviteter”, “Tydliggör vem som gjorde vad”).\n\nUndvik allmänna råd som “skriv mer” eller “reflektera mer”.\n\nPositiv avslutning\n\nFormulera en varm, inspirerande text (2–3 meningar) som kan läsas upp för personalen.\n\nFokusera på utveckling, stolthet och lagkänsla – inte bara resultatet.\n\n✍️ Skrivstil\n\nKort, tydlig, konkret.\n\nUndvik upprepningar.\n\nBlanda korta och medellånga meningar för rytm.\n\nSkriv som en professionell verksamhetsanalys, inte som en “rapport från en AI”.\n\nDela upp med tydliga rubriker (t.ex. “🌟 Styrkor”, “⚠️ Utmaningar”, “💬 Citat från veckan”, “📊 Besöksbild”, “🪞Reflektion”, “🧩 Tips för rapportskrivning”, “💚 Till personalen”).",
+              "role": "system"
+            },
+            {
+              "content": "=Här är data att analysera:\n{{ $json.docContent }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2800,
+        -1264
+      ],
+      "id": "85cd7425-cc82-4f9c-869b-355db83028c4",
+      "name": "Message a model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "qlVANgHQVRewZMT0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2896,
+        -992
+      ],
+      "id": "53236450-53f8-4fe4-8722-d9017ef21e0b",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "=data",
+        "name": "=RappORT.txt",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1EAClc0GI63AJHm-cLm-iFMKkydP5SWDj",
+          "mode": "list",
+          "cachedResultName": "The Logbook - Sammanställningar",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1EAClc0GI63AJHm-cLm-iFMKkydP5SWDj"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2784,
+        -656
+      ],
+      "id": "836548fe-15b8-4d03-bcc9-5c3502e3ed30",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "R75QT2qp1rBLDWUh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// 1) Flatten\nfunction flatten(obj, prefix = \"\") {\n  const out = {};\n  for (const key in obj) {\n    const val = obj[key];\n\n    // --- Om det är ett objekt (ex. Besöksstatistik)\n    if (val && typeof val === \"object\" && !Array.isArray(val)) {\n      Object.assign(out, flatten(val, prefix + key + \"_\"));\n\n    // --- Om det är en array (t.ex. Behovsanalys, Saknas, NästaSteg)\n    } else if (Array.isArray(val)) {\n      out[prefix + key] = val.filter(Boolean).join(\" • \"); // sammanfoga med punktlista\n\n    // --- Annars (enkla värden)\n    } else {\n      out[prefix + key] = val ?? \"\";\n    }\n  }\n  return out;\n}\n\n// 2) Platta ut alla poster\nconst flat = items.map(i => flatten(i.json));\n\n// 3) Headers (stabil ordning: sortera)\nconst headers = Array.from(new Set(flat.flatMap(o => Object.keys(o)))).sort();\n\n// 4) Bygg CSV utan citattecken (bara escapade kommatecken)\nfunction csvEscape(val) {\n  let s = val == null ? \"\" : String(val);\n  s = s.replace(/\\r?\\n|\\r/g, \" \"); // inga radbrytningar\n  s = s.replace(/,/g, \" \");        // ta bort kommatecken\n  return s;\n}\n\nlet csv = headers.join(\",\") + \"\\r\\n\";\nfor (const row of flat) {\n  const line = headers.map(h => csvEscape(row[h])).join(\",\");\n  csv += line + \"\\r\\n\";\n}\ncsv = csv.trimEnd() + \"\\r\\n\";\n\n// 5) Rätt UTF-16LE-konvertering med svenska tecken\nfunction toUTF16LE(str) {\n  const buf = Buffer.alloc(str.length * 2);\n  for (let i = 0; i < str.length; i++) {\n    buf.writeUInt16LE(str.charCodeAt(i), i * 2);\n  }\n  return buf;\n}\n\nconst bom = Buffer.from([0xFF, 0xFE]); // BOM\nconst utf16 = toUTF16LE(csv);\nconst finalBuffer = Buffer.concat([bom, utf16]);\n\n// 6) Returnera filen\nreturn [\n  {\n    json: {},\n    binary: {\n      data: {\n        data: finalBuffer.toString(\"base64\"),\n        mimeType: \"text/plain\",\n        fileName: \"rapport.txt\"\n      }\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2368,
+        -832
+      ],
+      "id": "e0f3e1b1-211f-4c0f-bfca-cdc1d81956ed",
+      "name": "TXT KOMMASEPARERAT"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Download - Rapport",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download - Antal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download - Rapport": {
+      "main": [
+        [
+          {
+            "node": "Extract Rapport",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download - Antal": {
+      "main": [
+        [
+          {
+            "node": "Extract Antal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Antal": {
+      "main": [
+        [
+          {
+            "node": "DatumFixAntal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Rapport": {
+      "main": [
+        [
+          {
+            "node": "DatumFixRapport",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DatumFixRapport": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DatumFixAntal": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Parse 2 Nice JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse 2 Nice JSON": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TXT KOMMASEPARERAT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TXT KOMMASEPARERAT": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Message a model": [
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\n  \"Grupp\": \"Drop In - HELG\",\n  \"Datum\": \"2025-10-18\",\n  \"Sammanfattning\": \"Ungdomarna deltog i olika aktiviteter såsom VR-turneringar, skapande, musik och traditionella spel. Många ungdomar samlades i sofforna vilket ledde till stök och flera tillsägelser. Personal upplevde svårigheter att aktivera alla och hålla ordning på stora grupper.\",\n  \"Stämning\": \"Orolig med inslag av kreativitet och engagemang.\",\n  \"Ungdomsdelaktighet\": \"Ungdomar initierade och deltog aktivt i VR-turneringar och kreativa projekt som 3D-printning och låtskrivning.\",\n  \"Behovsanalys\": [\n    \"Inför föranmälningssystem för aktiviteter som EA FC för att skapa bättre ordning och förutsägbarhet.\",\n    \"Implementera bokningssystem för populära resurser som Xbox för att undvika konflikt.\",\n    \"Tydliggör regler och förväntningar redan vid entrén för att minska störande beteenden i soffområdet.\"\n  ],\n  \"Relationsskapande\": \"Personal roterade mellan aktiviteter och försökte skapa kontakt med nya ungdomar men upplevde begränsad tid för djupare relationer.\",\n  \"Analys\": \"Den höga andelen ungdomar som samlades i sofforna skapade stök vilket skadade tryggheten för yngre och nya deltagare. Detta gjorde att en del sökte sig till lugnare kreativa rum. Brist på struktur i anmälan och resursbokning bidrar till oordning och utmanar personalens förmåga att upprätthålla en god miljö.\",\n  \"Reflektionspoäng\": 7,\n  \"Klarhetspoäng\": 8,\n  \"Besöksstatistik\": {\n    \"Tjejer\": 13,\n    \"Killar\": 37,\n    \"IckeBinära\": 9,\n    \"Personal\": 4,\n    \"Ålder_13_15\": 30,\n    \"Ålder_16_19\": 29,\n    \"Totalt\": 63\n  },\n  \"Saknas\": [\n    \"Fördelning av kön och ålder per aktivitet\",\n    \"Detaljer om personalens roller och ansvarsfördelning\",\n    \"Tidslinje för aktiviteter och övergångar\"\n  ],\n  \"NästaSteg\": [\n    \"Inför föranmälningssystem för organiserade aktiviteter\",\n    \"Skapa bokningsschema för spelutrustning som Xbox\",\n    \"Tydliggör regler och rutiner vid entrén för att minska stök\"\n  ]\n}",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      },
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\n  \"Grupp\": \"Drop In - HELG\",\n  \"Datum\": \"2025-10-17\",\n  \"Sammanfattning\": \"Flera aktiviteter pågick samtidigt, inklusive VR-turnering, pingisturnering, nagelfix och bakning. Ungdomar initierade karaoke som utvecklades till dans. En konflikt mellan en grupp ungdomar löstes delvis genom personalens samtal.\",\n  \"Stämning\": \"Dynamisk och livlig med varierande intensitet beroende på aktivitet.\",\n  \"Ungdomsdelaktighet\": \"Ungdomar initierade karaoke som pågick hela kvällen och bidrog till planering av poddrumsanvändningen.\",\n  \"Behovsanalys\": [\n    \"Planera aktiviteter tidigare för bättre marknadsföring och större deltagande.\",\n    \"Utse lämpligare platser för olika aktiviteter för att undvika störande ljudnivåer, särskilt för karaoke.\",\n    \"Förebygga och hantera konflikter inom grupper för att trygghet ska råda bland alla deltagare.\"\n  ],\n  \"Relationsskapande\": \"Personal turades om att bemanna fiket och hade dialoger med ungdomar för att lösa konflikter och skapa trygghet.\",\n  \"Analys\": \"Den stora aktiviteten och varierande aktivitetstyper signalerar ett behov av struktur för bättre koordinering. Konflikterna inom vissa grupper påverkar miljön negativt, vilket kan leda till att vissa ungdomar känner sig otrygga. Det höga antalet väskkontroller tyder på ett inflöde av deltagare, vilket kräver mer resurser eller omorganisering för smidighet.\",\n  \"Reflektionspoäng\": 7,\n  \"Klarhetspoäng\": 8,\n  \"Besöksstatistik\": {\n    \"Tjejer\": 23,\n    \"Killar\": 50,\n    \"IckeBinära\": 8,\n    \"Personal\": 8,\n    \"Ålder_13_15\": 44,\n    \"Ålder_16_19\": 37,\n    \"Totalt\": 81\n  },\n  \"Saknas\": [\n    \"Specifik tidslinje för aktiviteter\",\n    \"Uppdelning av kön och ålder per aktivitet\",\n    \"Detaljer om hur konflikter efterföljdes\"\n  ],\n  \"NästaSteg\": [\n    \"Planera och marknadsför aktiviteter i förväg.\",\n    \"Placera högljudda aktiviteter avskilt för att minska störning.\",\n    \"Utveckla tydligare strategier för konfliktlösning och inkludering.\"\n  ]\n}",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      },
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\n  \"Grupp\": \"Drop In - BG\",\n  \"Datum\": \"2025-10-16\",\n  \"Sammanfattning\": \"Ett uppskattat pass med ungefär 65-70 ungdomar, trots felaktig statistik. Aktiviteter inkluderade brädspel, pingis, biljard och kreativt skapande. Fiket var stängt, vilket påverkade ungdomarnas upplevelse.\",\n  \"Stämning\": \"Glad och aktiv med bra fokus och få tillsägelser.\",\n  \"Ungdomsdelaktighet\": \"Ungdomar initierade spel av brädspel och fotboll, samt arbete med selfie wall och cosplay-gruppens aktiviteter.\",\n  \"Behovsanalys\": [\n    \"Utvärdera och eventuellt justera fikets öppettider och utbud för att möta ungdomars behov av mat och sociala ytor.\",\n    \"Förtydliga och korrigera inloggningen för att undvika felaktig statistiksammanställning.\",\n    \"Öka personalresurser eller organisering vid stora besökarskaror för att säkerställa trygghet och struktur.\"\n  ],\n  \"Relationsskapande\": \"Personalen skapade trygghet genom samtal om kommande aktiviteter och engagemang med ungdomar i olika aktiviteter.\",\n  \"Analys\": \"Felaktig registrering av besökare försvårar uppföljning och planerande. Det kreativa utbudet och nya spel tilltalar ungdomar vilket ökar deltagande. Fiket är viktigt för ungdomars trivsel och saknas när det är stängt, vilket kan påverka samvaron negativt.\",\n  \"Reflektionspoäng\": 7,\n  \"Klarhetspoäng\": 8,\n  \"Besöksstatistik\": {\n    \"Tjejer\": 0,\n    \"Killar\": 0,\n    \"IckeBinära\": 0,\n    \"Personal\": 6,\n    \"Ålder_13_15\": 0,\n    \"Ålder_16_19\": 0,\n    \"Totalt\": 6\n  },\n  \"Saknas\": [\n    \"Korrekt köns- och åldersfördelning på ungdomar\",\n    \"Statistik för antal besökare\",\n    \"Uppdelad närvaro per aktivitet\"\n  ],\n  \"NästaSteg\": [\n    \"Korrigera inloggningen för rätt hemvist och statistik\",\n    \"Genomför en utvärdering av fikets verksamhet och önskemål\",\n    \"Planera för bättre stöd och bemanning vid höga ungdomsbesök\"\n  ]\n}",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      },
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\n  \"Grupp\": \"Drop In - BG\",\n  \"Datum\": \"2025-10-15\",\n  \"Sammanfattning\": \"Nya spel introducerades och prövades med besökarna. DOD-gruppen hade träff i podrummet, medan selfiesväggen försöktes etableras. Det var lite rörigt i början men personalen återtog kontrollen, vilket lugnade stämningen.\",\n  \"Stämning\": \"Efter initial förvirring präglades kvällen av lugn och gemyt.\",\n  \"Ungdomsdelaktighet\": \"DOD-gruppen organiserade sin egen aktivitet i podrummet. Ungdomar deltog aktivt vid provning av nya spel.\",\n  \"Behovsanalys\": [\n    \"Skapa tydligare rutiner vid öppning för att minska kaos.\",\n    \"Utveckla en fast strategi för hantering av vapes för att undvika otydligheter.\",\n    \"Satsa på att etablera selfiesväggen som en permanent aktivitet för att öka engagemang.\"\n  ],\n  \"Relationsskapande\": \"Personalen pratade öppet med gruppen om regler kring vapes och agerade snabbt för att återställa ordningen, vilket ökade förtroendet.\",\n  \"Analys\": \"Antalet besökare visar en jämn fördelning i åldersgrupper och kön med något fler killar. Introduktion av nya spel kan ha skapat initialt kaos, men även bidragit till intresse och aktivitet. Osäkerhet kring regler för vapes pekar på behov av tydligare riktlinjer för trygghet.\",\n  \"Reflektionspoäng\": 7,\n  \"Klarhetspoäng\": 8,\n  \"Besöksstatistik\": {\n    \"Tjejer\": 21,\n    \"Killar\": 35,\n    \"IckeBinära\": 6,\n    \"Personal\": 6,\n    \"Ålder_13_15\": 30,\n    \"Ålder_16_19\": 32,\n    \"Totalt\": 62\n  },\n  \"Saknas\": [\n    \"Fördelning av kön per aktivitet\",\n    \"Detaljerad tidslinje för händelser under passet\",\n    \"Specifik information om ungdomars initiativ till selfiesväggen\"\n  ],\n  \"NästaSteg\": [\n    \"Inför tydliga öppningsrutiner för att minska rörighet\",\n    \"Formalisera riktlinjer för hantering av vapes i lokalen\",\n    \"Etablera och marknadsför selfiesväggen som aktivitet\"\n  ]\n}",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      },
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\n  \"Grupp\": \"Drop In - BG\",\n  \"Datum\": \"2025-10-14\",\n  \"Sammanfattning\": \"Två ungdomar ringde av misstag för att boka laserdome men bokningen avbröts. Fikets aktiviteter inkluderade bakning i två grupper, t-shirttryck, kreativt arbete och spel. Ett ABF-möte hölls samtidigt som dagen var ovanligt lugn med många besökare.\",\n  \"Stämning\": \"Dagen präglades av en harmonisk och koncentrerad atmosfär utan konflikter.\",\n  \"Ungdomsdelaktighet\": \"Två ungdomar tog initiativ att kontakta laserdome, och konstgruppen deltog aktivt i kreativa aktiviteter med personalens stöd.\",\n  \"Behovsanalys\": [\n    \"Tillsätt en ansvarig fritidsledare för konstgruppen för att integrera deras kunskaper i gårdens underhåll och utveckling för ökad motivation.\",\n    \"Skapa tydligare kommunikation med externa aktiviteter för att undvika bokningsmissförstånd.\",\n    \"Fortsätt främja samarbete bland ungdomar i konflikt för att minska bråk och öka trygghet.\"\n  ],\n  \"Relationsskapande\": \"Personal arbetade med konfliktlösning och stödde ungdomarnas samarbete för att skapa en trygg och fungerande miljö.\",\n  \"Analys\": \"En missförståelse angående laserdomebokningen indikerar behov av bättre koordinering med externa aktörer. Trots många besökare var stämningen lugn, vilket kan bero på framgångsrikt relationsarbete. Konstgruppens behov av handledning pekar på en möjlighet att öka ungdomars engagemang genom ansvar och relevanta utmaningar.\",\n  \"Reflektionspoäng\": 7,\n  \"Klarhetspoäng\": 8,\n  \"Besöksstatistik\": {\n    \"Tjejer\": 20,\n    \"Killar\": 37,\n    \"IckeBinära\": 5,\n    \"Personal\": 9,\n    \"Ålder_13_15\": 21,\n    \"Ålder_16_19\": 41,\n    \"Totalt\": 62\n  },\n  \"Saknas\": [\n    \"Detaljer om köns- och åldersfördelning per aktivitet\",\n    \"Tidslinje för dagliga aktiviteter\",\n    \"Beskrivning av konfliktens art och lösning\"\n  ],\n  \"NästaSteg\": [\n    \"Utse en ansvarig fritidsledare för konstgruppen\",\n    \"Inför tydligare rutiner för bokning av externa aktiviteter\",\n    \"Stärk personalens resurser för konfliktlösning och ungdomsengagemang\"\n  ]\n}",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      },
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "{\n  \"Grupp\": \"Drop In - BG\",\n  \"Datum\": \"2025-10-13\",\n  \"Sammanfattning\": \"Dagen var lugn med pingis, kortspel och tv-spel. Flera samtal om kommande aktiviteter som Glamsquad, Star Wars-turnering och kulturkvällar ägde rum. Många ungdomar var trötta, vilket påverkade deltagandet.\",\n  \"Stämning\": \"Avslappnad och trivsam med inslag av skratt och gemenskap.\",\n  \"Ungdomsdelaktighet\": \"Lotus initierade samtal med två tjejer om Glamsquad och Kenneth engagerade ungdomar i planeringen av en Star Wars-turnering.\",\n  \"Behovsanalys\": [\n    \"Inför fler aktiva inslag för att motverka trötthet och öka engagemang.\",\n    \"Planera kulturella evenemang på lördagar för att erbjuda varierad verksamhet.\",\n    \"Skapa fler möjligheter för ungdomar att bidra med egna initiativ för ökad delaktighet.\"\n  ],\n  \"Relationsskapande\": \"Personalen samtalade direkt med ungdomar om intressen och planerade aktiviteter för att stärka relationer och trygghet.\",\n  \"Analys\": \"Dagen präglades av låg energi vilket begränsade aktiviteternas omfattning. Planerade kommande evenemang kan öka deltagandet och engagemanget. Personalen använder aktiv dialog för att inkludera ungdomar i verksamhetsutvecklingen, vilket främjar ansvarstagande.\",\n  \"Reflektionspoäng\": 6,\n  \"Klarhetspoäng\": 7,\n  \"Besöksstatistik\": {\n    \"Tjejer\": 11,\n    \"Killar\": 23,\n    \"IckeBinära\": 2,\n    \"Personal\": 3,\n    \"Ålder_13_15\": 13,\n    \"Ålder_16_19\": 23,\n    \"Totalt\": 36\n  },\n  \"Saknas\": [\"Fördelning av kön och ålder per aktivitet\", \"Detaljer om tidpunkter för aktiviteter\"],\n  \"NästaSteg\": [\n    \"Planera och marknadsför kulturkvällar på lördagar\",\n    \"Uppmuntra ungdomar att ta egna initiativ i verksamheten\",\n    \"Inför fler fysiskt aktiva spel eller lekar för att motverka trötthet\"\n  ]\n}",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      }
+    ]
+  },
+  "versionId": "b8cac5e9-c7e6-4b12-a6d0-8e470df6bc5b",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-23T22:26:46.311Z",
+      "updatedAt": "2025-09-23T22:26:46.311Z",
+      "role": "workflow:owner",
+      "workflowId": "QsUbhYVcmbMuU8ly",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
