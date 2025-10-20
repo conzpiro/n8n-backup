@@ -1,0 +1,551 @@
+{
+  "createdAt": "2025-10-12T00:18:12.472Z",
+  "updatedAt": "2025-10-12T00:18:27.000Z",
+  "id": "LNJpgq3RhC7bKGC9",
+  "name": "Nyhetssamlare v2 copy",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://rss.aftonbladet.se/rss2/small/pages/sections/senastenytt/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -736,
+        -768
+      ],
+      "id": "ee989bb1-8ced-4ccb-802b-5b707ab53de3",
+      "name": "Aftonbladet RSS"
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.expressen.se/nyheter/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -736,
+        -576
+      ],
+      "id": "b28a708c-a51a-4455-8e52-06d644c5c1df",
+      "name": "Expressen RSS"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        -768
+      ],
+      "id": "c6cdc3ff-69a3-4759-bbfd-640e47af8bed",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        -576
+      ],
+      "id": "594cf2df-2eda-4d8e-b78b-52ceff0855f7",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        -384
+      ],
+      "id": "b7a7e176-56c2-4c46-bc12-80fa5e87e3a9",
+      "name": "Limit2"
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -736,
+        -384
+      ],
+      "id": "4fc18043-cb78-4e39-b6ba-ea1a38f667e0",
+      "name": "TechCrunch RSS"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction stripHTML(str) {\n  return str ? str.replace(/<[^>]*>?/gm, '').trim() : '';\n}\n\nfunction parseDate(d) {\n  const date = new Date(d);\n  return isNaN(date.getTime()) ? 0 : date.getTime();\n}\n\nfunction formatDate(d) {\n  try {\n    return new Date(d).toLocaleDateString('sv-SE', {\n      day: 'numeric',\n      month: 'short',\n      year: 'numeric',\n    });\n  } catch {\n    return '';\n  }\n}\n\n// 1️⃣ sortera nyaste först\nitems.sort(\n  (a, b) =>\n    parseDate(b.json.isoDate || b.json.pubDate) -\n    parseDate(a.json.isoDate || a.json.pubDate)\n);\n\n// 2️⃣ skapa klickbara rader med datum och källa\nconst lines = items.map((i) => {\n  const j = i.json;\n  const title = stripHTML(j.title || 'Ingen titel');\n  const url = j.link || j.url || '';\n  const source =\n    j.feedTitle ||\n    j['dc:creator'] ||\n    j.source ||\n    (j.link ? new URL(j.link).hostname.replace('www.', '') : 'Okänd källa');\n  const date = formatDate(j.isoDate || j.pubDate || j.published || new Date());\n  return `• [${title}](${url}) — ${source} · ${date}`;\n});\n\n// 3️⃣ slå ihop allt till ett meddelande\nconst message = `🗞️ **TechCrunch**\\n` + lines.join('\\n');\n\nreturn [{ json: { content: message } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        -384
+      ],
+      "id": "bb8b1e85-7f5f-4fae-b2b5-08128d04d8c7",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction stripHTML(str) {\n  return str ? str.replace(/<[^>]*>?/gm, '').trim() : '';\n}\n\nfunction parseDate(d) {\n  const date = new Date(d);\n  return isNaN(date.getTime()) ? 0 : date.getTime();\n}\n\nfunction formatDate(d) {\n  try {\n    return new Date(d).toLocaleDateString('sv-SE', {\n      day: 'numeric',\n      month: 'short',\n      year: 'numeric',\n    });\n  } catch {\n    return '';\n  }\n}\n\nfunction getHostname(url) {\n  if (!url || typeof url !== 'string') return 'Okänd källa';\n  const match = url.match(/^(?:https?:\\/\\/)?(?:www\\.)?([^\\/]+)/i);\n  return match ? match[1] : 'Okänd källa';\n}\n\n// 1️⃣ sortera nyaste först\nitems.sort(\n  (a, b) =>\n    parseDate(b.json.isoDate || b.json.pubDate) -\n    parseDate(a.json.isoDate || a.json.pubDate)\n);\n\n// 2️⃣ skapa klickbara rader med datum och källa\nconst lines = items.map((i) => {\n  const j = i.json;\n  const title = stripHTML(j.title || 'Ingen titel');\n  const url = j.link || j.url || '';\n  const source =\n    j.feedTitle ||\n    j['dc:creator'] ||\n    j.source ||\n    getHostname(j.link);\n  const date = formatDate(j.isoDate || j.pubDate || j.published || new Date());\n  return `• [${title}](${url}) — ${source} · ${date}`;\n});\n\n// 3️⃣ slå ihop allt till ett meddelande\nconst message = `🗞️ **Expressen**\\n` + lines.join('\\n');\n\nreturn [{ json: { content: message } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        -576
+      ],
+      "id": "5fdb9bc1-0e1f-4966-89b5-85ba17d87a8e",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=",
+        "options": {},
+        "embeds": {
+          "values": [
+            {
+              "description": "={{ $json.content }}"
+            }
+          ]
+        },
+        "path": "e18d6a6f-39d9-4a76-adff-a39e6ed9c8f3"
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -384
+      ],
+      "id": "5466659b-ce8d-4b04-bd00-13aa8363aa68",
+      "name": "Discord2",
+      "webhookId": "e18d6a6f-39d9-4a76-adff-a39e6ed9c8f3",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "Pn7a74tA19SOGk9R",
+          "name": "Discord Webhook account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n/**\n * === KONFIGURATION ===\n * Lägg till fler om du har olika format\n */\nconst config = {\n  titleFields: ['title', 'headline', 'item_title'],\n  urlFields: ['link', 'url', 'guid'],\n  dateFields: ['isoDate', 'pubDate', 'published', 'date'],\n  sourceFields: ['feedTitle', 'source', 'author', 'creator']\n};\n\n/**\n * === Hjälpfunktioner ===\n */\nfunction firstAvailable(obj, keys) {\n  for (const key of keys) {\n    if (obj[key]) return obj[key];\n  }\n  return null;\n}\n\nfunction stripHTML(str) {\n  return str ? str.replace(/<[^>]*>?/gm, '').trim() : '';\n}\n\nfunction parseDate(d) {\n  const date = new Date(d);\n  return isNaN(date.getTime()) ? 0 : date.getTime();\n}\n\nfunction formatDate(d) {\n  try {\n    return new Date(d).toLocaleDateString('sv-SE', {\n      day: 'numeric',\n      month: 'short',\n      year: 'numeric'\n    });\n  } catch {\n    return '';\n  }\n}\n\nfunction getHostname(url) {\n  const match = url.match(/https?:\\/\\/([^/]+)/);\n  return match ? match[1].replace('www.', '') : 'Okänd källa';\n}\n\n/**\n * === Huvudlogik ===\n */\n\n// sortera nyaste först\nitems.sort((a, b) => {\n  const adate = firstAvailable(a.json, config.dateFields);\n  const bdate = firstAvailable(b.json, config.dateFields);\n  return parseDate(bdate) - parseDate(adate);\n});\n\n// begränsa till 10 nyaste\nconst latest = items.slice(0, 10);\n\n// bygg utdata\nconst lines = latest.map((i) => {\n  const j = i.json;\n  const title = stripHTML(firstAvailable(j, config.titleFields) || 'Ingen titel');\n  const url = firstAvailable(j, config.urlFields) || '';\n  const source =\n    firstAvailable(j, config.sourceFields) || getHostname(url);\n  const date = formatDate(firstAvailable(j, config.dateFields) || new Date());\n  return `• [${title}](${url}) — ${source} · ${date}`;\n});\n\n// slå ihop till Discord-meddelande\nconst message = `🗞️ **Aftonbladet**\\n` + lines.join('\\n');\n\nreturn [{ json: { content: message } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        -768
+      ],
+      "id": "8613c1c7-1210-40a2-bedd-5acb391b691b",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d9a7c20a-a42b-4e28-b809-8d45cce1fd52",
+              "leftValue": "={{$json[\"message\"][\"text\"].startsWith(\"nyheter\")}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1136,
+        -384
+      ],
+      "id": "47b8ac93-ab81-457e-b143-780b97fb0393",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "numberInputs": 10
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        64,
+        -448
+      ],
+      "id": "cddd63bd-f185-45ac-a9db-223675e61702",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        -192
+      ],
+      "id": "12f9f2c4-589b-41ce-bc4c-035e24e3ce74",
+      "name": "Limit3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction stripHTML(str) {\n  return str ? str.replace(/<[^>]*>?/gm, '').trim() : '';\n}\n\nfunction parseDate(d) {\n  const date = new Date(d);\n  return isNaN(date.getTime()) ? 0 : date.getTime();\n}\n\nfunction formatDate(d) {\n  try {\n    return new Date(d).toLocaleDateString('sv-SE', {\n      day: 'numeric',\n      month: 'short',\n      year: 'numeric',\n    });\n  } catch {\n    return '';\n  }\n}\n\nfunction getHostname(url) {\n  if (!url || typeof url !== 'string') return 'Okänd källa';\n  const match = url.match(/^(?:https?:\\/\\/)?(?:www\\.)?([^\\/]+)/i);\n  return match ? match[1] : 'Okänd källa';\n}\n\n// 1️⃣ sortera nyaste först\nitems.sort(\n  (a, b) =>\n    parseDate(b.json.isoDate || b.json.pubDate) -\n    parseDate(a.json.isoDate || a.json.pubDate)\n);\n\n// 2️⃣ skapa klickbara rader med datum och källa\nconst lines = items.map((i) => {\n  const j = i.json;\n  const title = stripHTML(j.title || 'Ingen titel');\n  const url = j.link || j.url || '';\n  const source =\n    j.feedTitle ||\n    j['dc:creator'] ||\n    j.source ||\n    getHostname(j.link);\n  const date = formatDate(j.isoDate || j.pubDate || j.published || new Date());\n  return `• [${title}](${url}) — ${source} · ${date}`;\n});\n\n// 3️⃣ slå ihop allt till ett meddelande\nconst message = `🗞️ **wired**\\n` + lines.join('\\n');\n\nreturn [{ json: { content: message } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        -192
+      ],
+      "id": "74edd2ff-1d82-41b7-92e6-1393883dfcf5",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "url": "https://www.wired.com/feed/rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -736,
+        -192
+      ],
+      "id": "8c7ab4b5-3f5a-44c0-b6b4-7cede3e389f4",
+      "name": "Wired RSS"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        0
+      ],
+      "id": "25cda855-17af-42df-8ba9-51cd393c3b48",
+      "name": "Limit4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction stripHTML(str) {\n  return str ? str.replace(/<[^>]*>?/gm, '').trim() : '';\n}\n\nfunction parseDate(d) {\n  const date = new Date(d);\n  return isNaN(date.getTime()) ? 0 : date.getTime();\n}\n\nfunction formatDate(d) {\n  try {\n    return new Date(d).toLocaleDateString('sv-SE', {\n      day: 'numeric',\n      month: 'short',\n      year: 'numeric',\n    });\n  } catch {\n    return '';\n  }\n}\n\nfunction getHostname(url) {\n  if (!url || typeof url !== 'string') return 'Okänd källa';\n  const match = url.match(/^(?:https?:\\/\\/)?(?:www\\.)?([^\\/]+)/i);\n  return match ? match[1] : 'Okänd källa';\n}\n\n// 1️⃣ sortera nyaste först\nitems.sort(\n  (a, b) =>\n    parseDate(b.json.isoDate || b.json.pubDate) -\n    parseDate(a.json.isoDate || a.json.pubDate)\n);\n\n// 2️⃣ skapa klickbara rader med datum och källa\nconst lines = items.map((i) => {\n  const j = i.json;\n  const title = stripHTML(j.title || 'Ingen titel');\n  const url = j.link || j.url || '';\n  const source =\n    j.feedTitle ||\n    j['dc:creator'] ||\n    j.source ||\n    getHostname(j.link);\n  const date = formatDate(j.isoDate || j.pubDate || j.published || new Date());\n  return `• [${title}](${url}) — ${source} · ${date}`;\n});\n\n// 3️⃣ slå ihop allt till ett meddelande\nconst message = `🗞️ **Mashable**\\n` + lines.join('\\n');\n\nreturn [{ json: { content: message } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "e9abf872-c680-4e1c-9d8c-5fb7fbc027ca",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "url": "https://in.mashable.com/sleep.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -736,
+        0
+      ],
+      "id": "9944da86-3b8a-4027-80a4-27902f306a4e",
+      "name": "mashable RSS"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {},
+        "path": "da3e4745-c65f-4c96-9131-ce2b2ac3b55c"
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1328,
+        -384
+      ],
+      "id": "4ecceb02-7e12-43f3-a697-45ef21f1161a",
+      "name": "Telegram Trigger",
+      "webhookId": "da3e4745-c65f-4c96-9131-ce2b2ac3b55c",
+      "credentials": {
+        "telegramApi": {
+          "id": "V3GueB9h8IV5dwAe",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Aftonbladet RSS": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expressen RSS": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TechCrunch RSS": {
+      "main": [
+        [
+          {
+            "node": "Limit2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Aftonbladet RSS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Expressen RSS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TechCrunch RSS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wired RSS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "mashable RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Discord2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit3": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Wired RSS": {
+      "main": [
+        [
+          {
+            "node": "Limit3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit4": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mashable RSS": {
+      "main": [
+        [
+          {
+            "node": "Limit4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "634a5eb2-bad9-4abe-844f-dee51f22d9f7",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-10-12T00:18:12.486Z",
+      "updatedAt": "2025-10-12T00:18:12.486Z",
+      "role": "workflow:owner",
+      "workflowId": "LNJpgq3RhC7bKGC9",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
