@@ -1,0 +1,897 @@
+{
+  "createdAt": "2025-10-13T22:34:11.887Z",
+  "updatedAt": "2025-10-16T12:05:46.000Z",
+  "id": "I7OLkHtlLmBjg6pD",
+  "name": "todoist automate",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "filter": "no due date&(#work&/🌞Today |  #personal&/🌞Today)"
+        }
+      },
+      "id": "5cff1aea-9ae3-4cfb-ae16-0247930303ca",
+      "name": "Find tasks under Today section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        112,
+        128
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "taskId": "={{ $json.id }}",
+        "updateFields": {
+          "dueString": "Today"
+        }
+      },
+      "id": "31f52477-204e-413d-b4b7-0bd0920f7b9d",
+      "name": "Set Due Date to Today",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        352,
+        128
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "* 8-23 * * *"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "0,30 0-8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "4fa162b9-dd7d-41c3-8bf5-54e662262f5f",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1008,
+        1328
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Tasks under Today section without a specified date, set due date to Today",
+        "height": 305,
+        "width": 560
+      },
+      "id": "0c3cd018-9761-4982-a0bb-ef55dc255e76",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Tasks due after today and before next week, move to This Week section section",
+        "height": 580,
+        "width": 580
+      },
+      "id": "952c8843-83bc-4da0-a80f-fd827a5f5eba",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "filter": "#work & due after: today & due before: next week & !/📆Week & !/🔁Repeat & !/⌛️Waiting"
+        }
+      },
+      "id": "a9de1c69-282d-4cb8-85ae-eff6b8386019",
+      "name": "Find work tasks due after today, before next week, and not in This Week section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        112,
+        1088
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Tasks due before tomorrow and not in Today section, move to Today section",
+        "height": 520,
+        "width": 580
+      },
+      "id": "32655185-335c-4758-8e13-423043778a6c",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "taskId": "={{ $json.id }}",
+        "project": {
+          "__rl": true,
+          "value": "2315232253",
+          "mode": "list",
+          "cachedResultName": "work"
+        },
+        "options": {
+          "section": "144900162"
+        }
+      },
+      "id": "66b92875-6d71-4a03-a7d2-1246de311c66",
+      "name": "Move to Waiting section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        2288
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Tasks tagged @wait and not in Waiting section, move to Waiting section",
+        "height": 300,
+        "width": 580
+      },
+      "id": "40db5928-6586-4d92-8341-e5b60ebf5a7c",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        2192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "filter": "#work & /⌛️Waiting & !@wait"
+        }
+      },
+      "id": "ef3864e2-8384-48ad-a832-761cbb045cf6",
+      "name": "Find tasks missing @wait tag",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        112,
+        2624
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "taskId": "={{ $json.id }}",
+        "updateFields": {
+          "labels": "={{ ($json.labels || []).concat(['wait']) }}"
+        }
+      },
+      "id": "b1c36dc1-6f7c-4a90-b3d4-81c41db205ad",
+      "name": "Add @wait tag",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        352,
+        2624
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Tasks in Waiting section without @wait tag, add the tag",
+        "height": 340,
+        "width": 580
+      },
+      "id": "eb2861c7-c436-4968-b604-bf82adbb008b",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        2528
+      ]
+    },
+    {
+      "parameters": {
+        "dataToSave": {
+          "values": [
+            {
+              "key": "change",
+              "value": "y"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executionData",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        1104
+      ],
+      "id": "153df25e-30ee-4cce-919f-2cf5f051d261",
+      "name": "Execution Data"
+    },
+    {
+      "parameters": {
+        "content": "## Tasks due next week, move to Next Week section",
+        "height": 540,
+        "width": 580
+      },
+      "id": "0bdb5681-5839-4ed5-8655-6013f1ab0311",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        1584
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "filter": "#work & due after: this sunday & due before: next sunday & !/🔁Repeat & !/⌛️Waiting & !/🗓️Next Week"
+        }
+      },
+      "id": "442ffe2d-0cd1-4227-9dcd-01eb86694f23",
+      "name": "Find work tasks due next week and not in Next Week section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        112,
+        1680
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "taskId": "={{ $json.id }}",
+        "project": {
+          "__rl": true,
+          "value": "2304402498",
+          "mode": "list",
+          "cachedResultName": "personal"
+        },
+        "options": {
+          "section": "165102088"
+        }
+      },
+      "id": "9b9728ac-aca3-4faa-90b1-867d3fc11427",
+      "name": "Move to Personal/Today section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        704
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "taskId": "={{ $json.id }}",
+        "project": {
+          "__rl": true,
+          "value": "2315232253",
+          "mode": "list",
+          "cachedResultName": "work"
+        },
+        "options": {
+          "section": "144754431"
+        }
+      },
+      "id": "a75a7eeb-b555-4ca4-bf6f-777a080e76d3",
+      "name": "Move to Work/Today section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        480
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "filter": "#work & !/🌞Today & (due before: tomorrow) & !/⌛️Waiting & !/🔁Repeat"
+        }
+      },
+      "id": "a37775ab-7068-4aa3-9793-6d2b3dc4deae",
+      "name": "Work tasks due today or earlier and not in Today section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        112,
+        480
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "filter": "#personal & !/🌞Today & (due before: tomorrow) & !/⌛️Waiting & !/🔁Repeat"
+        }
+      },
+      "id": "db2337f0-93ac-4317-a587-9550b8ce46aa",
+      "name": "Personal tasks due today or earlier and not in Today section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        112,
+        704
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "filter": "#personal & due after: today & due before: next week & !/📆Week & !/🔁Repeat & !/⌛️Waiting"
+        }
+      },
+      "id": "44d6981e-0888-465b-a3c1-d0e80760437c",
+      "name": "Find personal tasks due after today, before next week, and not in This Week section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        112,
+        1312
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "taskId": "={{ $json.id }}",
+        "project": {
+          "__rl": true,
+          "value": "2304402498",
+          "mode": "list",
+          "cachedResultName": "personal"
+        },
+        "options": {
+          "section": "144940437"
+        }
+      },
+      "id": "29c9d778-7ce3-4ed7-a526-857cb6a99386",
+      "name": "move to personal/week",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        1312
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "taskId": "={{ $json.id }}",
+        "project": {
+          "__rl": true,
+          "value": "2315232253",
+          "mode": "list",
+          "cachedResultName": "work"
+        },
+        "options": {
+          "section": "144754464"
+        }
+      },
+      "id": "c0118699-4ef1-4da4-97b6-f7daffba1da3",
+      "name": "move to work week",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        1088
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "taskId": "={{ $json.id }}",
+        "project": {
+          "__rl": true,
+          "value": "2315232253",
+          "mode": "list",
+          "cachedResultName": "work"
+        },
+        "options": {
+          "section": "175324103"
+        }
+      },
+      "id": "c9f24bdb-9af5-46b2-a5d9-707cb8ae4754",
+      "name": "move to work/next week",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        1680
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "filter": "#personal & due after: this sunday & due before: next sunday & !/🔁Repeat & !/⌛️Waiting & !/🗓️Next Week"
+        }
+      },
+      "id": "a3680065-c29e-4076-9a3a-327137173f36",
+      "name": "Find personal tasks due next week and not in Next Week section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        112,
+        1952
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "taskId": "={{ $json.id }}",
+        "project": {
+          "__rl": true,
+          "value": "2304402498",
+          "mode": "list",
+          "cachedResultName": "personal"
+        },
+        "options": {
+          "section": "175324232"
+        }
+      },
+      "id": "a8a3d5e9-e435-4217-ab33-95878ea8bf5f",
+      "name": "move to personal/next week",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        1952
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "filter": "#work & @wait & !/⌛️Waiting"
+        }
+      },
+      "id": "44b94faa-1de1-421e-aba2-0ce5ff6209ba",
+      "name": "Find #work tasks tagged @wait and not in Waiting section",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2,
+      "position": [
+        112,
+        2288
+      ],
+      "credentials": {
+        "todoistApi": {
+          "id": "uVI3KDp19wVIqicy",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## for filtering executions",
+        "height": 300,
+        "width": 360
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        1008
+      ],
+      "id": "038596a3-1563-4c1d-91cf-930c4c968546",
+      "name": "Sticky Note6"
+    }
+  ],
+  "connections": {
+    "Find tasks under Today section": {
+      "main": [
+        [
+          {
+            "node": "Set Due Date to Today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Due Date to Today": {
+      "main": [
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Find work tasks due after today, before next week, and not in This Week section",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Work tasks due today or earlier and not in Today section",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find #work tasks tagged @wait and not in Waiting section",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find tasks missing @wait tag",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find tasks under Today section",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find work tasks due next week and not in Next Week section",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Personal tasks due today or earlier and not in Today section",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find personal tasks due after today, before next week, and not in This Week section",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find personal tasks due next week and not in Next Week section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find work tasks due after today, before next week, and not in This Week section": {
+      "main": [
+        [
+          {
+            "node": "move to work week",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to Waiting section": {
+      "main": [
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find tasks missing @wait tag": {
+      "main": [
+        [
+          {
+            "node": "Add @wait tag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add @wait tag": {
+      "main": [
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find work tasks due next week and not in Next Week section": {
+      "main": [
+        [
+          {
+            "node": "move to work/next week",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to Work/Today section": {
+      "main": [
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to Personal/Today section": {
+      "main": [
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Work tasks due today or earlier and not in Today section": {
+      "main": [
+        [
+          {
+            "node": "Move to Work/Today section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Personal tasks due today or earlier and not in Today section": {
+      "main": [
+        [
+          {
+            "node": "Move to Personal/Today section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find personal tasks due after today, before next week, and not in This Week section": {
+      "main": [
+        [
+          {
+            "node": "move to personal/week",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "move to work week": {
+      "main": [
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "move to personal/week": {
+      "main": [
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "move to work/next week": {
+      "main": [
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find personal tasks due next week and not in Next Week section": {
+      "main": [
+        [
+          {
+            "node": "move to personal/next week",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "move to personal/next week": {
+      "main": [
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find #work tasks tagged @wait and not in Waiting section": {
+      "main": [
+        [
+          {
+            "node": "Move to Waiting section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execution Data": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Execution Data": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ]
+  },
+  "versionId": "54e2c960-58a0-4c47-b9cb-350e017fb4a5",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-13T22:34:11.915Z",
+      "updatedAt": "2025-10-13T22:34:11.915Z",
+      "role": "workflow:owner",
+      "workflowId": "I7OLkHtlLmBjg6pD",
+      "projectId": "ZOaOlv2Mz7C5Yg5V"
+    }
+  ],
+  "tags": []
+}
